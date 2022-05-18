@@ -15,20 +15,13 @@ export class List<T> {
       })
       return new List(resItems);
     }
-    // the values are of type number
+    // the values are not of type List
     return new List([...values])
   }
 
-  // private forEach(items: number[]) {
-  //   for (let i = 0; i < items.length; i++) {
-  //     console.log(items[i])
-  //   }
-  // }
-
   public append(otherList: List<T>): T [] | List<T> {
     const res = new List([...this.items, ...otherList.items]);
-    // res.forEach(res.items)
-    if (!this.items.length || !otherList.items.length) return res;
+    if (!this.length() || !otherList.length()) return res;
     return res.items
   }
 
@@ -38,12 +31,20 @@ export class List<T> {
 
   public filter<T>(callback: (el: T) => boolean): T[] {
     const res: T[] = []
-    for (let i = 0; i < this.items.length; i++) {
+    for (let i = 0; i < this.length(); i++) {
       const item = this.items[i]
       if (callback(item)) {
         res.push(item);
       }
     }
     return res;
+  }
+
+  public length(): number {
+    let count = 0;
+    for (const item of this.items) {
+      count++;
+    }
+    return count;
   }
 }
