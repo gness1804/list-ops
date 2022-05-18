@@ -74,6 +74,7 @@ describe('concat lists and lists of lists into new list', () => {
     const list3 = List.create()
     const list4 = List.create(4, 5, 6)
     const listOfLists = List.create(list2, list3, list4)
+    console.log('listOfLists:', listOfLists);
     expect(list1.concat(listOfLists)).toHaveValues(1, 2, 3, 4, 5, 6)
   })
 })
