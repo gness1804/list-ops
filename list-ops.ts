@@ -47,4 +47,13 @@ export class List<T> {
     }
     return count;
   }
+
+  public map<T>(callback: (item: T) => T): T[] {
+    const res: T[] = []
+    for (let i = 0; i < this.length(); i++) {
+      const transformedItem = callback(this.items[i]);
+      res.push(transformedItem);
+    }
+    return res;
+  }
 }
