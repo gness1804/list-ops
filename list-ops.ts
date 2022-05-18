@@ -74,4 +74,13 @@ export class List<T> {
     }
     return _acc;
   }
+
+  public reverse<T>(): T[] {
+    const res: T[] = []
+    for (let i = this.length() - 1; i >= 0; i--) {
+      const element = this.items[i];
+      res.push(element);
+    }
+    return res;
+  }
 }
