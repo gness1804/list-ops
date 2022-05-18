@@ -65,4 +65,13 @@ export class List<T> {
     }
     return _acc;
   }
+
+  public foldr<T, U>(callback: (acc: U, curr: T) => T, acc: U): U {
+    let _acc = acc;
+    for (let i = this.length() - 1; i >= 0; i--) {
+      const element = this.items[i];
+      _acc = callback(_acc, element);
+    }
+    return _acc;
+  }
 }
