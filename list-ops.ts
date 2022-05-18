@@ -56,4 +56,13 @@ export class List<T> {
     }
     return res;
   }
+
+  public foldl<T, U>(callback: (acc: U, curr: T) => T, acc: U): U {
+    let _acc = acc;
+    for (let i = 0; i < this.length(); i++) {
+      const element = this.items[i];
+      _acc = callback(_acc, element);
+    }
+    return _acc;
+  }
 }
