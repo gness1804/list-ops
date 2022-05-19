@@ -1,32 +1,34 @@
 export class List<T> {
-  constructor(public items: T[] = []) {}
-  public static create<T>(...values: T[] | List<T>[]): List<T> {
-    // Do *not* construct any array literal ([]) in your solution.
-    // Do *not* construct any arrays through new Array in your solution.
-    // DO *not* use any of the Array.prototype methods in your solution.
-
-    // You may use the destructuring and spreading (...) syntax from Iterable.
-
-    if (values.length && values[0].items) {
-      // the values are of type List
-      let resItems: T[] = [];
-      values.forEach((list) => {
-        resItems = [...resItems, ...list.items]
-      })
-      return new List(resItems);
-    }
-    // the values are not of type List
-    return new List([...values])
+  constructor(public items: T[] = []) { }
+  public static create<T>(...values: T[]): List<T> {
+    return new List(values)
   }
 
-  public append(otherList: List<T>): T [] | List<T> {
+  public append(otherList: List<T>): T[] | List<T> {
     const res = new List([...this.items, ...otherList.items]);
     if (!this.length() || !otherList.length()) return res;
     return res.items
   }
 
-  public concat(otherList: List<T>): T[] {
-    return [...this.items, ...otherList.items]
+  public concat(otherList: List<T>, currentRes?: T[]): T[] {
+    let res: T[] = currentRes || [];
+    otherList.forEach(item => {
+      if (item instanceof List) {
+        for (let index = 0; index < item.items.length; index++) {
+          const element = item.items[index];
+          res.push(element)
+        }
+      } else {
+        res.push(item);
+      }
+    })
+    return [...this.items, ...res]
+  }
+
+  private forEach(callback: (item: T) => void): void {
+    for (let i = 0; i < this.length(); i++) {
+      callback(this.items[i]);
+    }
   }
 
   public filter<T>(callback: (el: T) => boolean): T[] {
