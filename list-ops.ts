@@ -1,41 +1,41 @@
 export class List<T> {
-  constructor(public items: T[] = []) {}
-  public static create<T>(...values: T[] | List<T>[]): List<T> {
-    // Do *not* construct any array literal ([]) in your solution.
-    // Do *not* construct any arrays through new Array in your solution.
-    // DO *not* use any of the Array.prototype methods in your solution.
-
-    // You may use the destructuring and spreading (...) syntax from Iterable.
-
-    if (values.length && values[0].items) {
-      // the values are of type List
-      let resItems: T[] = [];
-      values.forEach((list) => {
-        resItems = [...resItems, ...list.items]
-      })
-      return new List(resItems);
-    }
-    // the values are not of type List
-    return new List([...values])
+  constructor(public items: T[] = []) { }
+  public static create<T>(...values: T[]): List<T> {
+    return new List(values)
   }
 
-  public append(otherList: List<T>): T [] | List<T> {
+  public append(otherList: List<T>): T[] | List<T> {
     const res = new List([...this.items, ...otherList.items]);
     if (!this.length() || !otherList.length()) return res;
     return res.items
   }
 
   public concat(otherList: List<T>): T[] {
-    return [...this.items, ...otherList.items]
-  }
-
-  public filter<T>(callback: (el: T) => boolean): T[] {
-    const res: T[] = []
-    for (let i = 0; i < this.length(); i++) {
-      const item = this.items[i]
-      if (callback(item)) {
+    let res: T[] = [];
+    otherList.forEach(item => {
+      if (item instanceof List) {
+        for (let index = 0; index < item.items.length; index++) {
+          const element = item.items[index];
+          res.push(element)
+        }
+      } else {
         res.push(item);
       }
+    })
+    return [...this.items, ...res]
+  }
+
+  private forEach(callback: (item: T) => void): void {
+    for (let i = 0; i < this.length(); i++) {
+      callback(this.items[i]);
+    }
+  }
+
+  public filter<U extends T>(callback: (el: U) => boolean): U[] {
+    const res: U[] = []
+    for (let i = 0; i < this.length(); i++) {
+      const item = this.items[i] as U;
+      if (callback(item)) { res.push(item) }
     }
     return res;
   }
@@ -48,34 +48,35 @@ export class List<T> {
     return count;
   }
 
-  public map<T>(callback: (item: T) => T): T[] {
-    const res: T[] = []
+  public map<U extends T>(callback: (item: U) => U): U[] {
+    const res: U[] = []
     for (let i = 0; i < this.length(); i++) {
-      const transformedItem = callback(this.items[i]);
+      const item = this.items[i] as U;
+      const transformedItem = callback(item);
       res.push(transformedItem);
     }
     return res;
   }
 
-  public foldl<T, U>(callback: (acc: U, curr: T) => T, acc: U): U {
-    let _acc = acc;
+  public foldl<U extends T, V extends T>(callback: (acc: V, curr: U) => V, acc: V): V {
+    let sum = acc;
     for (let i = 0; i < this.length(); i++) {
-      const element = this.items[i];
-      _acc = callback(_acc, element);
+      const element = this.items[i] as U;
+      sum = callback(sum, element);
     }
-    return _acc;
+    return sum;
   }
 
-  public foldr<T, U>(callback: (acc: U, curr: T) => T, acc: U): U {
-    let _acc = acc;
+  public foldr<U extends T, V extends T>(callback: (acc: V, curr: U) => V, acc: V): V {
+    let sum = acc;
     for (let i = this.length() - 1; i >= 0; i--) {
-      const element = this.items[i];
-      _acc = callback(_acc, element);
+      const element = this.items[i] as U;
+      sum = callback(sum, element);
     }
-    return _acc;
+    return sum;
   }
 
-  public reverse<T>(): T[] {
+  public reverse(): T[] {
     const res: T[] = []
     for (let i = this.length() - 1; i >= 0; i--) {
       const element = this.items[i];
