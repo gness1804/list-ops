@@ -58,22 +58,22 @@ export class List<T> {
     return res;
   }
 
-  public foldl<T, U>(callback: (acc: U, curr: T) => T, acc: U): U {
-    let _acc = acc;
+  public foldl<U extends T, V extends T>(callback: (acc: V, curr: U) => V, acc: V): V {
+    let sum = acc;
     for (let i = 0; i < this.length(); i++) {
-      const element = this.items[i];
-      _acc = callback(_acc, element);
+      const element = this.items[i] as U;
+      sum = callback(sum, element);
     }
-    return _acc;
+    return sum;
   }
 
-  public foldr<T, U>(callback: (acc: U, curr: T) => T, acc: U): U {
-    let _acc = acc;
+  public foldr<U extends T, V extends T>(callback: (acc: V, curr: U) => V, acc: V): V {
+    let sum = acc;
     for (let i = this.length() - 1; i >= 0; i--) {
-      const element = this.items[i];
-      _acc = callback(_acc, element);
+      const element = this.items[i] as U;
+      sum = callback(sum, element);
     }
-    return _acc;
+    return sum;
   }
 
   public reverse(): T[] {
