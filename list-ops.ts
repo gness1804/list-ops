@@ -10,8 +10,8 @@ export class List<T> {
     return res.items
   }
 
-  public concat(otherList: List<T>, currentRes?: T[]): T[] {
-    let res: T[] = currentRes || [];
+  public concat(otherList: List<T>): T[] {
+    let res: T[] = [];
     otherList.forEach(item => {
       if (item instanceof List) {
         for (let index = 0; index < item.items.length; index++) {
@@ -31,13 +31,11 @@ export class List<T> {
     }
   }
 
-  public filter<T>(callback: (el: T) => boolean): T[] {
-    const res: T[] = []
+  public filter<U extends T>(callback: (el: U) => boolean): U[] {
+    const res: U[] = []
     for (let i = 0; i < this.length(); i++) {
-      const item = this.items[i]
-      if (callback(item)) {
-        res.push(item);
-      }
+      const item = this.items[i] as U;
+      if (callback(item)) { res.push(item) }
     }
     return res;
   }
@@ -50,10 +48,11 @@ export class List<T> {
     return count;
   }
 
-  public map<T>(callback: (item: T) => T): T[] {
-    const res: T[] = []
+  public map<U extends T>(callback: (item: U) => U): U[] {
+    const res: U[] = []
     for (let i = 0; i < this.length(); i++) {
-      const transformedItem = callback(this.items[i]);
+      const item = this.items[i] as U;
+      const transformedItem = callback(item);
       res.push(transformedItem);
     }
     return res;
@@ -77,7 +76,7 @@ export class List<T> {
     return _acc;
   }
 
-  public reverse<T>(): T[] {
+  public reverse(): T[] {
     const res: T[] = []
     for (let i = this.length() - 1; i >= 0; i--) {
       const element = this.items[i];
